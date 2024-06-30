@@ -33,4 +33,4 @@ system:
   collection:
     client: Client
   sns:
-    product: client.fifo
+    client: client.fifo

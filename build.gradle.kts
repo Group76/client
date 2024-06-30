@@ -57,6 +57,7 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 	implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
 	implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
+	implementation("org.springframework.security:spring-security-crypto:6.3.1")
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
 
