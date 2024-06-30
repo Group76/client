@@ -14,7 +14,6 @@ class DynamoDbServiceImpl : IDynamoDbService {
     override fun putItem(clientEntity: ClientEntity) {
         val dynamoDbClient = DynamoDbClient.builder()
             .region(Region.US_EAST_2)
-            .credentialsProvider(ProfileCredentialsProvider.create())
             .build()
 
         val itemValues = mapOf(
