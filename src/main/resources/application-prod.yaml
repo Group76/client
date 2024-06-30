@@ -24,17 +24,13 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
       WRITE_DATES_WITH_ZONE_ID: true
-  data:
-    mongodb:
-      uri: ${mongoUri}
-      uuid-representation: standard
   config:
     import:
       - aws-parameterstore:/config/client-api_prod/
 
 system:
-  id-service: catalog-api
+  id-service: client-api
   collection:
     client: Client
   sns:
-    product: product.fifo
+    product: client.fifo
