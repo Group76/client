@@ -74,7 +74,7 @@ class CreateClientUseCase(
                 address = client.address,
                 id = client.id,
                 document = client.document,
-                token = jtwService.generateToken(client)
+                token = jtwService.generateToken(client.id.toString())
             ),
             error = null
         )

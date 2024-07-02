@@ -48,14 +48,22 @@ class DynamoDbServiceImpl : IDynamoDbService {
     }
 
     override fun verifyEmail(email: String): Boolean {
-        return verifyExists("email", email)
+        return scan("email", email).count() > 0
     }
 
     override fun verifyDocument(document: String): Boolean {
-        return verifyExists("document", document)
+        return scan("document", document).count() > 0
     }
 
-    fun verifyExists(attributeName: String, value: String): Boolean {
+    override fun getByEmail(email: String): ScanResponse {
+        return scan("email", email)
+    }
+
+    override fun getByDocument(document: String): ScanResponse {
+        return scan("document", document)
+    }
+
+    fun scan(attributeName: String, value: String): ScanResponse {
         val dynamoDbClient = DynamoDbClient.builder()
             .region(Region.US_EAST_2)
             .build()
@@ -67,7 +75,6 @@ class DynamoDbServiceImpl : IDynamoDbService {
             .expressionAttributeValues(mapOf(":value" to AttributeValue.builder().s(value).build()))
             .build()
 
-        val scanResponse: ScanResponse = dynamoDbClient.scan(scanRequest)
-        return scanResponse.count() > 0
+        return dynamoDbClient.scan(scanRequest)
     }
 }

@@ -12,14 +12,14 @@ import javax.crypto.SecretKey
 class JwtServiceImpl : IJwtService {
     private val secretKey = "D9texL9_fknC5cb0h-ik2INJyzdona14ZlHoLuOA8nE="
     private val key: SecretKey = Keys.hmacShaKeyFor(secretKey.toByteArray())
-    override fun generateToken(clientEntity: ClientEntity): String? {
+    override fun generateToken(id: String): String? {
         val now = Date()
         val validity = Date(now.time + 3600000) // 1 hour validity
 
         return Jwts.builder()
             .expiration(validity)
             .issuedAt(now)
-            .claim("id", clientEntity.id)
+            .claim("id", id)
             .signWith(key)
             .compact()
     }
