@@ -1,37 +1,30 @@
 package com.group76.client.controllers.v1
 
 import com.group76.client.controllers.v1.mapping.UrlMapping
+import com.group76.client.entities.request.AnonymizeClientRequest
 import com.group76.client.entities.request.CreateClientRequest
-import com.group76.client.entities.request.GetTokenByDocumentRequest
-import com.group76.client.entities.request.GetTokenByEmailRequest
 import com.group76.client.entities.response.CreateClientResponse
+import com.group76.client.usecases.IAnonymizeClientUseCase
 import com.group76.client.usecases.ICreateClientUseCase
-import com.group76.client.usecases.IGetTokenByDocumentUseCase
-import com.group76.client.usecases.IGetTokenByEmailUseCase
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping(UrlMapping.Version.V1)
-class ClientController(
-    private val createClientUseCase: ICreateClientUseCase
+@RequestMapping(UrlMapping.Version.V1 + UrlMapping.Resource.ANONYMIZE)
+class AnonymizeController(
+    private val anonymizeClientUseCase: IAnonymizeClientUseCase
 ) {
-    @PostMapping(
-        name = "CreateClient"
+    @DeleteMapping(
+        name = "AnonymizeClient"
     )
     @Operation(
-        method = "CreateClient",
-        description = "Create a client",
+        method = "AnonymizeClient",
+        description = "Anonymize a client",
         responses = [
             ApiResponse(
                 description = "OK", responseCode = "200", content = [
@@ -50,10 +43,10 @@ class ClientController(
             )
         ]
     )
-    fun createClient(
-        @Valid @RequestBody request: CreateClientRequest
+    fun anonymizeClient(
+        @Valid @RequestBody request: AnonymizeClientRequest
     ): ResponseEntity<Any> {
-        val response = createClientUseCase.execute(request)
+        val response = anonymizeClientUseCase.execute(request)
 
         return ResponseEntity(
             response.error ?: response.data,

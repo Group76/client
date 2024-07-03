@@ -6,6 +6,7 @@ object UrlMapping {
     }
 
     object Resource {
-        const val CLIENT = "/client"
+        const val ANONYMIZE = "/anonymize"
+        const val AUTH = "/auth"
     }
 }

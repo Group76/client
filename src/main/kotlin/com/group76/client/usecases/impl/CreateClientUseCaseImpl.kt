@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class CreateClientUseCase(
+class CreateClientUseCaseImpl(
     private val dynamo: IDynamoDbService,
     private val snsService: ISnsService,
     private val systemProperties: SystemProperties,

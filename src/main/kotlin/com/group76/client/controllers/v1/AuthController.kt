@@ -22,16 +22,18 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(UrlMapping.Version.V1)
-class ClientController(
-    private val createClientUseCase: ICreateClientUseCase
+@RequestMapping(UrlMapping.Version.V1 + UrlMapping.Resource.AUTH)
+class AuthController(
+    private val getTokenByDocumentUseCase: IGetTokenByDocumentUseCase,
+    private val getTokenByEmailUseCase: IGetTokenByEmailUseCase,
 ) {
     @PostMapping(
-        name = "CreateClient"
+        name = "GetTokenByEmail",
+        path = ["token/email"]
     )
     @Operation(
-        method = "CreateClient",
-        description = "Create a client",
+        method = "GetTokenByEmail",
+        description = "Get a token by e-mail and password",
         responses = [
             ApiResponse(
                 description = "OK", responseCode = "200", content = [
@@ -50,10 +52,46 @@ class ClientController(
             )
         ]
     )
-    fun createClient(
-        @Valid @RequestBody request: CreateClientRequest
+    fun getTokenByEmail(
+        @Valid @RequestBody request: GetTokenByEmailRequest
     ): ResponseEntity<Any> {
-        val response = createClientUseCase.execute(request)
+        val response = getTokenByEmailUseCase.execute(request)
+
+        return ResponseEntity(
+            response.error ?: response.data,
+            response.statusCodes
+        )
+    }
+
+    @PostMapping(
+        name = "GetTokenByDocument",
+        path = ["token/document"]
+    )
+    @Operation(
+        method = "GetTokenByDocument",
+        description = "Get a token by document and password",
+        responses = [
+            ApiResponse(
+                description = "OK", responseCode = "200", content = [
+                    Content(schema = Schema(implementation = CreateClientResponse::class))
+                ]
+            ),
+            ApiResponse(
+                description = "Bad Request", responseCode = "400", content = [
+                    Content(schema = Schema(implementation = Unit::class))
+                ]
+            ),
+            ApiResponse(
+                description = "Internal Error", responseCode = "500", content = [
+                    Content(schema = Schema(implementation = Unit::class))
+                ]
+            )
+        ]
+    )
+    fun getTokenByDocument(
+        @Valid @RequestBody request: GetTokenByDocumentRequest
+    ): ResponseEntity<Any> {
+        val response = getTokenByDocumentUseCase.execute(request)
 
         return ResponseEntity(
             response.error ?: response.data,

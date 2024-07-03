@@ -1,24 +1,25 @@
 package com.group76.client.usecases.impl
 
-import com.group76.client.entities.request.GetTokenByEmailRequest
+import com.group76.client.entities.request.GetTokenByDocumentRequest
 import com.group76.client.entities.response.BaseResponse
 import com.group76.client.entities.response.GetTokenResponse
 import com.group76.client.services.IDynamoDbService
 import com.group76.client.services.IHashService
 import com.group76.client.services.IJwtService
-import com.group76.client.usecases.IGetTokenByEmailUseCase
+import com.group76.client.usecases.IGetTokenByDocumentUseCase
+import com.group76.client.utils.StringHelper
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
-class GetTokenByEmailUseCase(
+class GetTokenByDocumentUseCaseImpl(
     private val dynamo: IDynamoDbService,
     private val hashService: IHashService,
     private val jtwService: IJwtService
-) : IGetTokenByEmailUseCase {
-    override fun execute(payload: GetTokenByEmailRequest): BaseResponse<GetTokenResponse> {
+) : IGetTokenByDocumentUseCase {
+    override fun execute(payload: GetTokenByDocumentRequest): BaseResponse<GetTokenResponse> {
         val scanResponse = dynamo
-            .getByEmail(payload.email)
+            .getByDocument(StringHelper.removeSpecialCharactersAndSpaces(payload.document)!!)
 
         if (!scanResponse.hasItems())
             return BaseResponse(
