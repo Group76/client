@@ -3,13 +3,9 @@ package com.group76.client.services.impl
 import com.group76.client.entities.ClientEntity
 import com.group76.client.services.IDynamoDbService
 import org.springframework.stereotype.Component
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue
-import software.amazon.awssdk.services.dynamodb.model.PutItemRequest
-import software.amazon.awssdk.services.dynamodb.model.ScanRequest
-import software.amazon.awssdk.services.dynamodb.model.ScanResponse
+import software.amazon.awssdk.services.dynamodb.model.*
 
 @Component
 class DynamoDbServiceImpl : IDynamoDbService {
@@ -45,6 +41,7 @@ class DynamoDbServiceImpl : IDynamoDbService {
             .build()
 
         dynamoDbClient.putItem(putItemRequest)
+        dynamoDbClient.close()
     }
 
     override fun verifyEmail(email: String): Boolean {
@@ -75,6 +72,37 @@ class DynamoDbServiceImpl : IDynamoDbService {
             .expressionAttributeValues(mapOf(":value" to AttributeValue.builder().s(value).build()))
             .build()
 
-        return dynamoDbClient.scan(scanRequest)
+        val result = dynamoDbClient.scan(scanRequest)
+        dynamoDbClient.close()
+        return result
+    }
+
+    override fun anonymizeClient(id: String) {
+        val primaryKeyName = "id"
+
+        // List of attributes to remove
+        val attributesToRemove = listOf(
+            "email",
+            "name",
+            "phone",
+            "address",
+            "document"
+        )
+
+        // Construct the REMOVE expression
+        val updateExpression = attributesToRemove.joinToString(separator = ", ", prefix = "REMOVE ") { it }
+        val key = mapOf(primaryKeyName to AttributeValue.builder().s(id).build())
+        val client = DynamoDbClient.builder()
+            .region(Region.US_EAST_1)  // Replace with your AWS region
+            .build()
+
+        val updateRequest = UpdateItemRequest.builder()
+            .tableName(tableName)
+            .key(key)
+            .updateExpression(updateExpression)
+            .build()
+
+        client.updateItem(updateRequest)
+        client.close()
     }
 }

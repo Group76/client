@@ -9,4 +9,5 @@ interface IDynamoDbService {
     fun verifyDocument(document: String): Boolean
     fun getByEmail(email: String): ScanResponse
     fun getByDocument(document: String): ScanResponse
+    fun anonymizeClient(id: String)
 }
