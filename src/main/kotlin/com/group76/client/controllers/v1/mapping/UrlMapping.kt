@@ -8,5 +8,6 @@ object UrlMapping {
     object Resource {
         const val ANONYMIZE = "/anonymize"
         const val AUTH = "/auth"
+        const val USER = "/user"
     }
 }

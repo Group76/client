@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(UrlMapping.Version.V1)
+@RequestMapping(UrlMapping.Version.V1, UrlMapping.Resource.USER)
 class ClientController(
     private val createClientUseCase: ICreateClientUseCase
 ) {
