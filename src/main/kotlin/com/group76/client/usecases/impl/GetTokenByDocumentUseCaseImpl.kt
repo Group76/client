@@ -51,7 +51,10 @@ class GetTokenByDocumentUseCaseImpl(
         }
 
         return BaseResponse(
-            data = GetTokenResponse(jtwService.generateToken(id)!!),
+            data = GetTokenResponse(
+                token = jtwService.generateToken(id)!!,
+                id = id
+            ),
             error = null
         )
     }
