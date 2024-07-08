@@ -5,8 +5,7 @@ class StringHelper {
         fun removeSpecialCharactersAndSpaces(input: String?): String? {
             if(input.isNullOrEmpty()) return input
 
-            val regex = Regex("[^a-zA-Z0-9.-]+")
-            return input.replace(regex, "")
+            return input.filter { it.isLetterOrDigit() }
         }
     }
 }
