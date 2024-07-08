@@ -29,7 +29,7 @@ class AuthController(
 ) {
     @PostMapping(
         name = "GetTokenByEmail",
-        path = ["token/email"]
+        path = ["email"]
     )
     @Operation(
         method = "GetTokenByEmail",
@@ -65,7 +65,7 @@ class AuthController(
 
     @PostMapping(
         name = "GetTokenByDocument",
-        path = ["token/document"]
+        path = ["document"]
     )
     @Operation(
         method = "GetTokenByDocument",
