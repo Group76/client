@@ -41,11 +41,11 @@ class GetTokenByEmailUseCaseImpl(
             )
         }
 
-        if (hashService.checkPassword(payload.password, password)) {
+        if (!hashService.checkPassword(payload.password, password)) {
             return BaseResponse(
                 data = null,
-                error = BaseResponse.BaseResponseError("Client not found."),
-                statusCodes = HttpStatus.BAD_REQUEST
+                error = BaseResponse.BaseResponseError("Client not authorized."),
+                statusCodes = HttpStatus.UNAUTHORIZED
             )
         }
 
