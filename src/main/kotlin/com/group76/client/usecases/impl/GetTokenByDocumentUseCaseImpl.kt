@@ -7,7 +7,7 @@ import com.group76.client.services.IDynamoDbService
 import com.group76.client.services.IHashService
 import com.group76.client.services.IJwtService
 import com.group76.client.usecases.IGetTokenByDocumentUseCase
-import com.group76.client.utils.StringHelper
+import com.group76.client.utils.Helper
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
@@ -19,7 +19,7 @@ class GetTokenByDocumentUseCaseImpl(
 ) : IGetTokenByDocumentUseCase {
     override fun execute(payload: GetTokenByDocumentRequest): BaseResponse<GetTokenResponse> {
         val scanResponse = dynamo
-            .getByDocument(StringHelper.removeSpecialCharactersAndSpaces(payload.document)!!)
+            .getByDocument(Helper.removeSpecialCharactersAndSpaces(payload.document)!!)
 
         if (!scanResponse.hasItems())
             return BaseResponse(

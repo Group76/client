@@ -12,7 +12,7 @@ import com.group76.client.services.IHashService
 import com.group76.client.services.IJwtService
 import com.group76.client.services.ISnsService
 import com.group76.client.usecases.ICreateClientUseCase
-import com.group76.client.utils.StringHelper
+import com.group76.client.utils.Helper
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.util.*
@@ -39,7 +39,7 @@ class CreateClientUseCaseImpl(
             id = UUID.randomUUID(),
             email = payload.email,
             phone = payload.phone,
-            document = StringHelper.removeSpecialCharactersAndSpaces(payload.document),
+            document = Helper.removeSpecialCharactersAndSpaces(payload.document),
             password = hashService.hash(payload.password),
             address = payload.address
         )
