@@ -78,8 +78,6 @@ class DynamoDbServiceImpl : IDynamoDbService {
     }
 
     override fun anonymizeClient(id: String) {
-        val primaryKeyName = "id"
-
         val attributesToRemove = listOf(
             "email",
             "user_name",
@@ -89,9 +87,9 @@ class DynamoDbServiceImpl : IDynamoDbService {
         )
 
         val updateExpression = attributesToRemove.joinToString(separator = ", ", prefix = "REMOVE ") { it }
-        val key = mapOf(primaryKeyName to AttributeValue.builder().s(id).build())
+        val key = mapOf("id" to AttributeValue.builder().s(id).build())
         val client = DynamoDbClient.builder()
-            .region(Region.US_EAST_1)
+            .region(Region.US_EAST_2)
             .build()
 
         val updateRequest = UpdateItemRequest.builder()
