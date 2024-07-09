@@ -2,15 +2,14 @@ package com.group76.client.controllers.v1
 
 import com.group76.client.controllers.v1.mapping.UrlMapping
 import com.group76.client.entities.request.AnonymizeClientRequest
-import com.group76.client.entities.request.CreateClientRequest
 import com.group76.client.entities.response.CreateClientResponse
 import com.group76.client.usecases.IAnonymizeClientUseCase
-import com.group76.client.usecases.ICreateClientUseCase
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -19,6 +18,8 @@ import org.springframework.web.bind.annotation.*
 class AnonymizeController(
     private val anonymizeClientUseCase: IAnonymizeClientUseCase
 ) {
+    val logger: org.slf4j.Logger = LoggerFactory.getLogger(LoggerFactory::class.java)
+
     @DeleteMapping(
         name = "AnonymizeClient"
     )
@@ -44,8 +45,10 @@ class AnonymizeController(
         ]
     )
     fun anonymizeClient(
-        @Valid @RequestBody request: AnonymizeClientRequest
+        @Valid @RequestBody request: AnonymizeClientRequest,
+        @RequestHeader(value = "Authorization") auth: String?
     ): ResponseEntity<Any> {
+        logger.info("auth: $auth")
         val response = anonymizeClientUseCase.execute(request)
 
         return ResponseEntity(
