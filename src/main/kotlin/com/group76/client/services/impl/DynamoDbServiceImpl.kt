@@ -88,7 +88,7 @@ class DynamoDbServiceImpl : IDynamoDbService {
             "document"
         )
 
-        val updateExpression = attributesToRemove.joinToString(separator = ", ", prefix = "REMOVE") { it }
+        val updateExpression = attributesToRemove.joinToString(separator = ", ", prefix = "REMOVE ") { it }
         val key = mapOf(primaryKeyName to AttributeValue.builder().s(id).build())
         val client = DynamoDbClient.builder()
             .region(Region.US_EAST_1)
