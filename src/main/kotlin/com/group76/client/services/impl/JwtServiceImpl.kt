@@ -1,7 +1,8 @@
 package com.group76.client.services.impl
 
-import com.group76.client.entities.ClientEntity
 import com.group76.client.services.IJwtService
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Component
@@ -19,8 +20,33 @@ class JwtServiceImpl : IJwtService {
         return Jwts.builder()
             .expiration(validity)
             .issuedAt(now)
+            .subject(id)
             .claim("id", id)
             .signWith(key)
             .compact()
+    }
+
+
+    override fun extractId(token: String): String? =
+        getAllClaims(token)
+            ?.subject
+    override fun isExpired(token: String): Boolean =
+        getAllClaims(token)
+            ?.expiration
+            ?.before(Date(System.currentTimeMillis())) ?: true
+    private fun getAllClaims(token: String): Claims? {
+        try {
+            val parser = Jwts.parser()
+                .verifyWith(key)
+                .build()
+
+            return parser
+                .parseSignedClaims(token)
+                .payload
+        }
+        catch (ex: ExpiredJwtException){
+            return null
+        }
+
     }
 }

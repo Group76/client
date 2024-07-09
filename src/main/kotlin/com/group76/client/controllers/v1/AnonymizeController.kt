@@ -45,11 +45,10 @@ class AnonymizeController(
         ]
     )
     fun anonymizeClient(
-        @Valid @RequestBody request: AnonymizeClientRequest,
-        @RequestHeader(value = "Authorization") auth: String?
+        @RequestHeader(value = "Authorization") auth: String
     ): ResponseEntity<Any> {
         logger.info("auth: $auth")
-        val response = anonymizeClientUseCase.execute(request)
+        val response = anonymizeClientUseCase.execute(AnonymizeClientRequest(auth))
 
         return ResponseEntity(
             response.error ?: response.data,
