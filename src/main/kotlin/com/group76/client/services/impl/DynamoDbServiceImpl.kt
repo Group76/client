@@ -24,7 +24,7 @@ class DynamoDbServiceImpl : IDynamoDbService {
             itemValues["email"] = AttributeValue.builder().s(clientEntity.email).build()
 
         if(!clientEntity.name.isNullOrEmpty())
-            itemValues["name"] = AttributeValue.builder().s(clientEntity.name).build()
+            itemValues["user_name"] = AttributeValue.builder().s(clientEntity.name).build()
 
         if(!clientEntity.phone.isNullOrEmpty())
             itemValues["phone"] = AttributeValue.builder().s(clientEntity.phone).build()
@@ -80,20 +80,18 @@ class DynamoDbServiceImpl : IDynamoDbService {
     override fun anonymizeClient(id: String) {
         val primaryKeyName = "id"
 
-        // List of attributes to remove
         val attributesToRemove = listOf(
             "email",
-            "name",
+            "user_name",
             "phone",
             "address",
             "document"
         )
 
-        // Construct the REMOVE expression
-        val updateExpression = attributesToRemove.joinToString(separator = ", ", prefix = "REMOVE ") { it }
+        val updateExpression = attributesToRemove.joinToString(separator = ", ", prefix = "REMOVE") { it }
         val key = mapOf(primaryKeyName to AttributeValue.builder().s(id).build())
         val client = DynamoDbClient.builder()
-            .region(Region.US_EAST_1)  // Replace with your AWS region
+            .region(Region.US_EAST_1)
             .build()
 
         val updateRequest = UpdateItemRequest.builder()
