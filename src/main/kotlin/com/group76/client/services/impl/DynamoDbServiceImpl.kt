@@ -10,7 +10,7 @@ import software.amazon.awssdk.services.dynamodb.model.*
 @Component
 class DynamoDbServiceImpl : IDynamoDbService {
     private val tableName = "Client"
-    override fun putItem(clientEntity: ClientEntity) {
+    override fun putItem(clientEntity: ClientEntity) : PutItemResponse {
         val dynamoDbClient = DynamoDbClient.builder()
             .region(Region.US_EAST_2)
             .build()
@@ -20,19 +20,19 @@ class DynamoDbServiceImpl : IDynamoDbService {
             "password" to AttributeValue.builder().s(clientEntity.password).build()
         )
 
-        if(!clientEntity.email.isNullOrEmpty())
+        if (!clientEntity.email.isNullOrEmpty())
             itemValues["email"] = AttributeValue.builder().s(clientEntity.email).build()
 
-        if(!clientEntity.name.isNullOrEmpty())
+        if (!clientEntity.name.isNullOrEmpty())
             itemValues["user_name"] = AttributeValue.builder().s(clientEntity.name).build()
 
-        if(!clientEntity.phone.isNullOrEmpty())
+        if (!clientEntity.phone.isNullOrEmpty())
             itemValues["phone"] = AttributeValue.builder().s(clientEntity.phone).build()
 
-        if(!clientEntity.address.isNullOrEmpty())
+        if (!clientEntity.address.isNullOrEmpty())
             itemValues["address"] = AttributeValue.builder().s(clientEntity.address).build()
 
-        if(!clientEntity.document.isNullOrEmpty())
+        if (!clientEntity.document.isNullOrEmpty())
             itemValues["document"] = AttributeValue.builder().s(clientEntity.document).build()
 
         val putItemRequest = PutItemRequest.builder()
@@ -40,16 +40,33 @@ class DynamoDbServiceImpl : IDynamoDbService {
             .item(itemValues)
             .build()
 
-        dynamoDbClient.putItem(putItemRequest)
+        val response = dynamoDbClient.putItem(putItemRequest)
         dynamoDbClient.close()
+        return response
     }
 
-    override fun verifyEmail(email: String): Boolean {
-        return scan("email", email).count() > 0
+    override fun verifyEmail(email: String, id: String?): Boolean {
+        return scan("email", email, "id", id).count() > 0
     }
 
-    override fun verifyDocument(document: String): Boolean {
-        return scan("document", document).count() > 0
+    override fun verifyDocument(document: String, id: String?): Boolean {
+        return scan("document", document, "id", id).count() > 0
+    }
+
+    override fun getById(id: String): GetItemResponse {
+        val key = mapOf("id" to AttributeValue.builder().s(id).build())
+        val client = DynamoDbClient.builder()
+            .region(Region.US_EAST_2)
+            .build()
+
+        val updateRequest = GetItemRequest.builder()
+            .tableName(tableName)
+            .key(key)
+            .build()
+
+        val item = client.getItem(updateRequest)
+        client.close()
+        return item
     }
 
     override fun getByEmail(email: String): ScanResponse {
@@ -60,16 +77,34 @@ class DynamoDbServiceImpl : IDynamoDbService {
         return scan("document", document)
     }
 
-    fun scan(attributeName: String, value: String): ScanResponse {
+    fun scan(
+        attributeName: String,
+        value: String,
+        attributeNameDiff: String? = null,
+        valueNotEqual: String? = null
+    ): ScanResponse {
         val dynamoDbClient = DynamoDbClient.builder()
             .region(Region.US_EAST_2)
             .build()
 
-        val scanRequest = ScanRequest.builder()
+        val scanRequest = if(attributeNameDiff == null || valueNotEqual == null)
+            ScanRequest.builder()
             .tableName(tableName)
             .filterExpression("#attr = :value")
             .expressionAttributeNames(mapOf("#attr" to attributeName))
             .expressionAttributeValues(mapOf(":value" to AttributeValue.builder().s(value).build()))
+            .build()
+        else ScanRequest.builder()
+            .tableName(tableName)
+            .filterExpression("#attr = :value AND #notEqualAttr <> :notEqualValue")
+            .expressionAttributeNames(mapOf(
+                "#attr" to attributeName,
+                "#notEqualAttr" to attributeNameDiff
+            ))
+            .expressionAttributeValues(mapOf(
+                ":value" to AttributeValue.builder().s(value).build(),
+                ":notEqualValue" to AttributeValue.builder().s(valueNotEqual).build()
+            ))
             .build()
 
         val result = dynamoDbClient.scan(scanRequest)
@@ -100,5 +135,54 @@ class DynamoDbServiceImpl : IDynamoDbService {
 
         client.updateItem(updateRequest)
         client.close()
+    }
+
+    override fun updateItem(clientEntity: ClientEntity): UpdateItemResponse {
+        val dynamoDbClient = DynamoDbClient.builder()
+            .region(Region.US_EAST_2)
+            .build()
+
+        var updateExpression = "SET password = :password"
+
+        val itemValues = mutableMapOf(
+            ":password" to AttributeValue.builder().s(clientEntity.password).build()
+        )
+
+        if (!clientEntity.email.isNullOrEmpty()) {
+            itemValues[":email"] = AttributeValue.builder().s(clientEntity.email).build()
+            updateExpression = updateExpression.plus(", email = :email")
+        }
+
+        if (!clientEntity.name.isNullOrEmpty()) {
+            itemValues[":user_name"] = AttributeValue.builder().s(clientEntity.name).build()
+            updateExpression = updateExpression.plus(", user_name = :user_name")
+        }
+
+        if (!clientEntity.phone.isNullOrEmpty()) {
+            itemValues[":phone"] = AttributeValue.builder().s(clientEntity.phone).build()
+            updateExpression = updateExpression.plus(", phone = :phone")
+        }
+
+        if (!clientEntity.address.isNullOrEmpty()) {
+            itemValues[":address"] = AttributeValue.builder().s(clientEntity.address).build()
+            updateExpression = updateExpression.plus(", address = :address")
+        }
+
+        if (!clientEntity.document.isNullOrEmpty()) {
+            itemValues[":document"] = AttributeValue.builder().s(clientEntity.document).build()
+            updateExpression = updateExpression.plus(", document = :document")
+        }
+
+        val updateItemRequest = UpdateItemRequest.builder()
+            .tableName(tableName)
+            .key(mapOf("id" to AttributeValue.builder().s(clientEntity.id.toString()).build()))
+            .updateExpression(updateExpression)
+            .expressionAttributeValues(itemValues)
+            .returnValues(ReturnValue.UPDATED_NEW)
+            .build()
+
+        val result = dynamoDbClient.updateItem(updateItemRequest)
+        dynamoDbClient.close()
+        return result
     }
 }

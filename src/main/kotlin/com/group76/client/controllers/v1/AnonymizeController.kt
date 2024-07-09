@@ -2,13 +2,12 @@ package com.group76.client.controllers.v1
 
 import com.group76.client.controllers.v1.mapping.UrlMapping
 import com.group76.client.entities.request.AnonymizeClientRequest
-import com.group76.client.entities.response.CreateClientResponse
+import com.group76.client.entities.response.GetClientInformationResponse
 import com.group76.client.usecases.IAnonymizeClientUseCase
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -29,7 +28,7 @@ class AnonymizeController(
         responses = [
             ApiResponse(
                 description = "OK", responseCode = "200", content = [
-                    Content(schema = Schema(implementation = CreateClientResponse::class))
+                    Content(schema = Schema(implementation = GetClientInformationResponse::class))
                 ]
             ),
             ApiResponse(
@@ -39,6 +38,16 @@ class AnonymizeController(
             ),
             ApiResponse(
                 description = "Internal Error", responseCode = "500", content = [
+                    Content(schema = Schema(implementation = Unit::class))
+                ]
+            ),
+            ApiResponse(
+                description = "Forbidden", responseCode = "403", content = [
+                    Content(schema = Schema(implementation = Unit::class))
+                ]
+            ),
+            ApiResponse(
+                description = "Unauthorized", responseCode = "401", content = [
                     Content(schema = Schema(implementation = Unit::class))
                 ]
             )

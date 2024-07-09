@@ -3,7 +3,7 @@ package com.group76.client.controllers.v1
 import com.group76.client.controllers.v1.mapping.UrlMapping
 import com.group76.client.entities.request.GetTokenByDocumentRequest
 import com.group76.client.entities.request.GetTokenByEmailRequest
-import com.group76.client.entities.response.CreateClientResponse
+import com.group76.client.entities.response.GetClientInformationResponse
 import com.group76.client.usecases.IGetGuestTokenUseCase
 import com.group76.client.usecases.IGetTokenByDocumentUseCase
 import com.group76.client.usecases.IGetTokenByEmailUseCase
@@ -35,7 +35,7 @@ class AuthController(
         responses = [
             ApiResponse(
                 description = "OK", responseCode = "200", content = [
-                    Content(schema = Schema(implementation = CreateClientResponse::class))
+                    Content(schema = Schema(implementation = GetClientInformationResponse::class))
                 ]
             ),
             ApiResponse(
@@ -71,7 +71,7 @@ class AuthController(
         responses = [
             ApiResponse(
                 description = "OK", responseCode = "200", content = [
-                    Content(schema = Schema(implementation = CreateClientResponse::class))
+                    Content(schema = Schema(implementation = GetClientInformationResponse::class))
                 ]
             ),
             ApiResponse(
@@ -107,7 +107,7 @@ class AuthController(
         responses = [
             ApiResponse(
                 description = "OK", responseCode = "200", content = [
-                    Content(schema = Schema(implementation = CreateClientResponse::class))
+                    Content(schema = Schema(implementation = GetClientInformationResponse::class))
                 ]
             ),
             ApiResponse(

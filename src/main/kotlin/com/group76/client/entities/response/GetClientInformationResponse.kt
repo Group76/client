@@ -2,7 +2,7 @@ package com.group76.client.entities.response
 
 import java.util.UUID
 
-data class CreateClientResponse(
+data class GetClientInformationResponse(
     val id: UUID,
     val document: String?,
     val email: String?,
