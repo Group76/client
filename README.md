@@ -15,7 +15,6 @@ Irá subir a image no ECR pela pipeline e atualizar a task do ECR.
 
 A API Gateway irá redirecionar as chamadas para o ALB e também conta com autorização de token, para permitir somente usuários que possuem autorização.
 
-
 ![Diagram](https://github.com/Group76/client/blob/main/docs/client.drawio.png)
 
 ### SAGA Pattern
@@ -24,7 +23,8 @@ A pattern escolhida foi a coreografada para não ter um serviço fazendo tudo e 
 A coreografia foi feita utilizando o SNS, sendo assim posta as mensagens necessárias nele e lê quem tem o interesse na informação, sendo possível efetuar ações que ache necessário.
 
 ### Como rodar
-Necessário subir a infraestrutura do projeto [AWS Live](https://github.com/Group76/aws-live).
+Necessário subir a infraestrutura do projeto [AWS Live](https://github.com/Group76/aws-live) e adicionar no Parameter Store a configuração:
+* /config/jwt-secret = D9texL9_fknC5cb0h-ik2INJyzdona14ZlHoLuOA8nE=
 
 Após infraestrutura configurada é só rodar a actions que a pipeline irá fazer push da image e atualizar o a task definition da ECS.
 Para a pipeline funcionar na AWS necessário também configurar no github as secrets:
