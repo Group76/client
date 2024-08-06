@@ -9,7 +9,7 @@ Projeto para lidar com criação de clientes e gerar token.
 * API Gateway
 * ECR
 
-Basicamente esse projeto irá gravar produtos em um MongoDB (NoSQL) e postar criações e alterações deles no tópico SNS da AWS.
+Basicamente esse projeto irá gravar os clientes em um DynamoDB (NoSQL) e postar criações/alterações no tópico SNS da AWS.
 
 Irá subir a image no ECR pela pipeline e atualizar a task do ECR.
 
