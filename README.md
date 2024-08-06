@@ -16,7 +16,7 @@ Irá subir a image no ECR pela pipeline e atualizar a task do ECR.
 A API Gateway irá redirecionar as chamadas para o ALB e também conta com autorização de token, para permitir somente usuários que possuem autorização.
 
 
-![Diagram](https://github.com/Group76/catalog/blob/main/docs/catalog.drawio.png)
+![Diagram](https://github.com/Group76/client/blob/main/docs/client.drawio.png)
 
 ### SAGA Pattern
 
